@@ -1,5 +1,5 @@
-import { get, writable } from "svelte/store";
-import { plantables, type IPlantable } from "./plantables";
+import { writable } from "svelte/store";
+import { plantables, type IPlantable } from "../models/plantables";
 
 const farm = writable([] as IPlantable[][]);
 

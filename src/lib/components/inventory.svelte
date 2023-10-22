@@ -2,6 +2,7 @@
 <!-- be able to select a fruit or vegetable to grow -->
 <script lang="ts">
     import { createEventDispatcher } from "svelte";
+    import Store from "./store.svelte";
     const dispatch = createEventDispatcher();
 </script>
 
@@ -10,6 +11,7 @@
         <!-- this is one row -->
         <button on:click={() => dispatch('item', 'carrot')}>Carrot</button>
         <button on:click={() => dispatch('item', 'strawberry')}>Strawberry</button>
+        <Store></Store>
     </div>
 </div>
 

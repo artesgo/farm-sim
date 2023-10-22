@@ -1,7 +1,7 @@
 <script lang="ts">
   import gsap from 'gsap';
   import { onMount } from "svelte";
-  import { plantables, type IPlantable } from "./plantables";
+  import { plantables, type IPlantable } from "../models/plantables";
   export let plant: IPlantable = plantables.dirt;
 
 

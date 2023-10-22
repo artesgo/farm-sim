@@ -1,10 +1,9 @@
 <script lang="ts">
     import { onMount } from "svelte";
-    import { plantables, type IPlantable } from "./plantables";
+    import { plantables, type IPlantable } from "../models/plantables";
     import Dirt from "./dirt.svelte";
-    import type { Plot } from "./plot";
     import Inventory from "./inventory.svelte";
-    import { createFarm } from "./farm";
+    import { createFarm } from "../stores/farm";
     import Plantable from "./plantable.svelte";
 
     // divide the entire screen up into small square blocks
