@@ -14,7 +14,7 @@ export interface IPlantable {
     }
 }
 
-export const plantables = {
+export const plantables: { [key: string]: IPlantable } = {
     strawberry: {
         name: 'strawberry',
         price: 10,
