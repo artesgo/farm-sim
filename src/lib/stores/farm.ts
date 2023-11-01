@@ -1,11 +1,14 @@
 import { writable } from "svelte/store";
 import { plantables, type IPlantable } from "../models/plantables";
 
+// this farm writable is only created once
 const farm = writable([] as IPlantable[][]);
 
 export function createFarm() {
     // this exposes the writable stores methods
     const { subscribe, update, set } = farm;
+
+    // with this return, we expose our farm data update methods
     return {
         // a function signature is how we can call the function
         // what it needs to work, and these things are called, parameters
@@ -19,6 +22,22 @@ export function createFarm() {
                                 return plantToUpdateTo; // if it is, we update the data to the new plant
                             }
                             return _plant; // if not, use the existing plant
+                        });
+                    }
+                    return _row;
+                });
+                return state;
+            })
+        },
+        harvest: (rowToUpdate: number, colToUpdate: number) => {
+            update(state => {
+                state = state.map((_row, rowNumber) => {
+                    if (rowToUpdate === rowNumber) {
+                        return _row.map((_plant, colNumber) => {
+                            if (colToUpdate === colNumber) {
+                                return plantables.dirt;
+                            }
+                            return _plant;
                         });
                     }
                     return _row;

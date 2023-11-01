@@ -5,6 +5,8 @@ export interface IPlantableStage {
 
 export interface IPlantable {
     name: string,
+    price: number,
+    quality: number,
     stages: {
         growing: IPlantableStage,
         ripe: IPlantableStage,
@@ -15,6 +17,8 @@ export interface IPlantable {
 export const plantables = {
     strawberry: {
         name: 'strawberry',
+        price: 10,
+        quality: 1,
         stages: {
             growing: {time: 0, src: 'sapling.svg'},
             ripe: {time: 5, src: 'strawberry.svg'},
@@ -23,6 +27,8 @@ export const plantables = {
     },
     carrot: {
         name: 'carrot',
+        price: 10,
+        quality: 1,
         stages: {
             growing: {time: 0, src: 'sapling.svg'},
             ripe: {time: 5, src: 'carrot.svg'},
@@ -31,6 +37,8 @@ export const plantables = {
     },
     pineapple: {
         name: 'pineapple',
+        price: 10,
+        quality: 1,
         stages: {
             growing: {time: 0, src: 'sapling.svg'},
             ripe: {time: 20, src: 'pineapple.svg'},
@@ -39,6 +47,8 @@ export const plantables = {
     },
     dirt: {
         name: 'dirt',
+        price: 0,
+        quality: 1,
         stages: {
             growing: {time: 0, src: 'dirt.svg'},
             ripe: {time: 0, src: 'dirty.svg'},

@@ -1,7 +1,6 @@
 <script lang="ts">
     import { onMount } from "svelte";
-    import { plantables, type IPlantable } from "../models/plantables";
-    import Dirt from "./dirt.svelte";
+    import { plantables } from "../models/plantables";
     import Inventory from "./inventory.svelte";
     import { createFarm } from "../stores/farm";
     import Plantable from "./plantable.svelte";
@@ -17,13 +16,6 @@
     onMount(() => {
         farm.resetFarm();
     });
-
-    function checkIfWeCanPlant(row: number, col: number, plot: IPlantable) {
-        // if statements, if something is true
-        if (plot.name === "dirt") {
-            farm.updatePlot(row, col, selectedPlant);
-        }
-    }
 
     function changeItem(item: { detail: string }) {
         console.log(item.detail);
@@ -61,12 +53,13 @@
         {#each $farm as row, _row}
             <div class="grid-row">
                 {#each row as plot, _col}
-                    <button class="plot" on:click={() => checkIfWeCanPlant(_row, _col, plot)}>
-                        <Dirt />
-                        {#if plot.name !== "dirt"}
-                            <Plantable plant={plot} id={_row + "-" + _col} />
-                        {/if}
-                    </button>
+                    <Plantable
+                        plant={plot}
+                        id={_row + "-" + _col}
+                        row={_row}
+                        col={_col}
+                        selectedPlant={selectedPlant}
+                    />
                 {/each}
             </div>
         {/each}
@@ -76,15 +69,6 @@
 <Inventory on:item={(item) => changePlant(item)} />
 
 <style>
-    .plot {
-        width: 40px;
-        height: 40px;
-        border: 1px solid;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        position: relative;
-    }
     .grid-row {
         display: flex;
         /* this makes it so small screens don't wrap the buttons */
