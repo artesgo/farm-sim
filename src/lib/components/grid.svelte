@@ -48,7 +48,7 @@
     }
 </script>
 
-<div class="background">
+<div class="background flex items-center justify-center">
     <div class="grid">
         {#each $farm as row, _row}
             <div class="grid-row">
@@ -69,6 +69,10 @@
 <Inventory on:item={(item) => changePlant(item)} />
 
 <style>
+    .background {
+        height: 100dvh;
+    }
+
     .grid-row {
         display: flex;
         /* this makes it so small screens don't wrap the buttons */

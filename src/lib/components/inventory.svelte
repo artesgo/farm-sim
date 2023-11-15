@@ -9,8 +9,10 @@
 <div class="fixed">
     <div class="flex justify-around">
         <!-- this is one row -->
-        <button on:click={() => dispatch('item', 'carrot')}>Carrot</button>
-        <button on:click={() => dispatch('item', 'strawberry')}>Strawberry</button>
+        <button class="btn btn-primary" on:click={() => dispatch('item', 'carrot')}>Carrot</button>
+        <button class="btn btn-secondary" on:click={() => dispatch('item', 'carrot')}>Carrot</button>
+        <button class="btn btn-accent" on:click={() => dispatch('item', 'carrot')}>Carrot</button>
+        <button class="btn btn-neutral" on:click={() => dispatch('item', 'strawberry')}>Strawberry</button>
         <Store></Store>
     </div>
 </div>
