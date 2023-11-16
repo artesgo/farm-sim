@@ -3,12 +3,14 @@
   import { plantables, type IPlantable } from "../models/plantables";
   import Dirt from "./dirt.svelte";
   import { createFarm } from "$lib/stores/farm";
+  import { createInventory } from "$lib/stores/inventory";
 
   export let plant: IPlantable = plantables.dirt;
   export let row = 0;
   export let col = 0;
   export let selectedPlant: IPlantable;
   const farm = createFarm();
+  const inventory = createInventory();
 
   let stage = "";
   let time = 0;
@@ -50,12 +52,15 @@
         interval = setInterval(() => time++, 1000);
       }, 0);
     } else {
-      farm.harvest(row, col);
-      clearInterval(interval);
+      // if the stage is ripe, or later, then harvest
+      if (stage === 'ripe' || stage === 'wilted') {
+        farm.harvest(row, col);
+        inventory.harvest(plant);
+        clearInterval(interval);
+      }
     }
   }
 </script>
-
 
 <button class="plot" on:click={() => checkIfWeCanPlant()}>
   <Dirt />
