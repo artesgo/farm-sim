@@ -1,10 +1,6 @@
 import { writable } from "svelte/store";
 import type { IPlantable } from "../models/plantables";
-
-export type Stock = {
-    product: IPlantable,
-    quantity: number,
-}
+import type { Stock } from "$lib/models/stock";
 
 // a list of items it sells
 const store = writable([] as Stock[]);
@@ -14,7 +10,7 @@ export function createStore() {
     const { subscribe, update } = store;
     return {
         // buy from the player
-        sell: (item: IPlantable, quantity: number) => {
+        buy: (item: IPlantable, quantity: number) => {
             // update the state of our store, if we sell potatos to the store
             // the store will now have potatos to sell to the public
             update(state => {
@@ -42,9 +38,8 @@ export function createStore() {
             // return total sell price of the players items
         },
         // sell to the player
-        buy: (quantity: number) => {
+        sell: (item: IPlantable, quantity: number) => {
             update(state => {
-                // sell seeds
                 return state
             });
         },

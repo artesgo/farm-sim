@@ -2,6 +2,6 @@
     import '$lib/app.css';
 </script>
 
-<main data-theme="luxury">
+<main data-theme="coffee">
     <slot />
 </main>

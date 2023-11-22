@@ -5,6 +5,7 @@
     // use the create wallet utility to create an instance of our wallet
     import { createWallet } from "../stores/money";
     import { createInventory } from "$lib/stores/inventory";
+    import Stock from "./stock.svelte";
 
     const wallet = createWallet(); // player money
     const store = createStore(); // store inventory and buy and sell features
@@ -12,34 +13,39 @@
 
     // create a reference to a dialog
     let dialog: HTMLDialogElement;
-    let quantity = 1;
 
-    function sellFromPlayer(plantable: IPlantable) {
+    function sellFromPlayer(detail: { product: IPlantable, amount: number }) {
         // try to sell a carrot to the store
-        store.sell(plantable, 1);
-        wallet.sell(plantable.price);
-        inventory.sell(plantable, quantity);
+        store.buy(detail.product, detail.amount);
+        wallet.sell(detail.product.price, detail.amount);
+        // do this for next time
+        // inventory.remove(detail.product, detail.amount);
     }
 
-    function sellFromStore() {
-
+    function sellFromStore(detail: { product: IPlantable, amount: number }) {
+        store.sell(detail.product, detail.amount);
+        wallet.buy(detail.product.price, detail.amount);
+        inventory.harvest(detail.product, detail.amount);
     }
 </script>
 
 <dialog bind:this={dialog} class="modal modal-box">
-    <form>
-        <h1>Welcome to Jinnies Store</h1>
-        <h2>Your wallet: ${$wallet}</h2>
+    <form class="flex flex-col justify-between h-full">
+        <div class="mb-20">
+            <h1 class="text-6xl mb-4">Welcome to Jinnies Store</h1>
+            <div class="flex flex-row justify-between">
+                <button class="btn btn-primary">buy</button>
+                <input class="input input-primary" type="text" readonly value={"You have $" + $wallet}>
+                <button class="btn btn-secondary">sell</button>
+            </div>
+        </div>
         <div>
             Sell From Player Inventory
             <!-- loop through player inventory -->
             {#each $inventory as plantable}
-                <div>
-                    {plantable.name} {plantable.price}
-                    <button class="btn btn-primary" on:click={() => sellFromPlayer(plantable)}>
-                        Sell
-                    </button>
-                </div>
+                {#if plantable.quantity > 0}
+                    <Stock {plantable} on:sell={(event) => sellFromPlayer(event.detail)}></Stock>
+                {/if}
             {/each}
         </div>
         <!-- <div>
