@@ -19,7 +19,7 @@
         store.buy(detail.product, detail.amount);
         wallet.sell(detail.product.price, detail.amount);
         // do this for next time
-        // inventory.remove(detail.product, detail.amount);
+        inventory.remove(detail.product, detail.amount);
     }
 
     function sellFromStore(detail: { product: IPlantable, amount: number }) {

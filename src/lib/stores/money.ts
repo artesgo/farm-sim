@@ -6,7 +6,7 @@ const money = writable(1000);
 export function createWallet() {
     const { subscribe, update } = money;
     return {
-        buy: (cost: number) => {
+        buy: (cost: number, amount: number) => {
             let success = false;
 
             update(state => {
@@ -15,8 +15,9 @@ export function createWallet() {
                  * the >= here is so that we can only buy if we have enough money
                  * >= is "greater than or equal"
                  */
-                if (state >= cost) {
-                    state -= cost;
+                const total = cost * amount;
+                if (state >= total) {
+                    state -= total;
                     success = true;
                 }
                 return state;
@@ -24,10 +25,10 @@ export function createWallet() {
 
             return success;
         },
-        sell: (cost: number) => {
+        sell: (cost: number, amount: number) => {
             update(state => {
-                state += cost;
-                return state
+                state += cost * amount;
+                return state;
             });
         },
         subscribe
