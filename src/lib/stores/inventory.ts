@@ -43,7 +43,7 @@ function remove(item: IPlantable, quantity = 1) {
             if (
                 stock.product.name === item.name &&
                 stock.product.quality === item.quality &&
-                stock.quantity <= quantity
+                stock.quantity >= quantity // this was the broken piece of code
             ) {
                 stock.quantity -= quantity;
             }

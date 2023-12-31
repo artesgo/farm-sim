@@ -30,9 +30,9 @@
             }, 700);
             return true;
         }
-        if (amount < 1) {
+        if (amount < 0) {
             setTimeout(() => {
-                amount = 1;
+                amount = 0;
             }, 700);
             return true;
         }
