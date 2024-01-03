@@ -23,7 +23,6 @@
         player2 = cleanup(player2);
     }
 
-    // let aaron catch up from here
     function attack(p1: ICharacter[], p2: ICharacter[], index = 0) {
         let [attacker] = p2;
 
@@ -60,19 +59,24 @@
 </script>
 
 <div class="flex">
-
-    <div class="player1 player">
+    <div class="player1 player battler-reverse">
         {#each player1 as character}
-            <Character {character}></Character>
+            <Character {character} reverse></Character>
         {/each}
     </div>
+
+    <button
+        class="btn btn-primary border rounded-md items-center"
+        on:click={start}
+    >
+        Start
+    </button>
 
     <div class="player2 player">
         {#each player2 as character}
             <Character {character}></Character>
         {/each}
     </div>
-
 </div>
 
 <div class="flex justify-around">
@@ -87,13 +91,18 @@
 <style>
     .player {
         display: flex;
-        justify-content: space-between;
-        width: 640px;
+        justify-content: flex-start;
+        gap: 20px;
+        width: 1200px;
+        margin: 0 auto;
     }
     .player1 {
         margin-right: 20px;
     }
     .player2 {
         margin-left: 20px;
+    }
+    .battler-reverse {
+        flex-direction: row-reverse;
     }
 </style>

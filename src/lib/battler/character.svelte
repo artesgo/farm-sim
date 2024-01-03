@@ -2,6 +2,8 @@
     import type { ICharacter } from "./character";
 
     export let character: ICharacter;
+    // use this to reverse the portraits when we get images
+    export let reverse = false;
 </script>
 
 <div class="character bg-neutral text-neutral-content rounded-md">
