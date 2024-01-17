@@ -4,9 +4,12 @@
   import { getRandomItem } from "./foodlist";
   import { getRandomPet } from "./petlist";
   import Character from "./character.svelte";
+  import { getPlayer } from "./player";
+  import { v4 } from "uuid";
 
   let pets: ICharacter[] = [];
   let items: ICharacter[] = [];
+  let player1 = getPlayer();
 
   function randomFoodItems() {
     const item1 = getRandomItem();
@@ -25,9 +28,16 @@
   }
 
   // TODO: drag and drop store items into our squad
-  function buyPet(pet: ICharacter) {}
+  function buyPet(pet: ICharacter) {
+    player1.add({
+      ...pet,
+      id: v4(),
+    });
+  }
 
-  function sellPet(pet: ICharacter) {}
+  function sellPet(pet: ICharacter) {
+    player1.remove(pet);
+  }
 
   function buyFood(target: ICharacter) {}
 
@@ -50,8 +60,23 @@
   </div>
 {/each}
 
-<div>
+<!-- goal today is to click and buy pet -->
+<div class="flex gap-4">
   {#each pets as pet}
-    <Character character={pet}></Character>
+    <div class="flex flex-col justify-center">
+      <Character character={pet}></Character>
+      <button class="btn mt-2" on:click={() => buyPet(pet)}> Buy </button>
+    </div>
+  {/each}
+</div>
+
+<!-- bonus goal sell pet -->
+<h2>Your current Team</h2>
+<div class="flex gap-4">
+  {#each $player1 as pet}
+    <div class="flex flex-col justify-center">
+      <Character character={pet}></Character>
+      <button class="btn mt-2" on:click={() => sellPet(pet)}> Sell </button>
+    </div>
   {/each}
 </div>

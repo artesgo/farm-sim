@@ -2,12 +2,14 @@
   import type { ICharacter } from "$lib/battler/character";
   import Character from "$lib/battler/character.svelte";
   import Shop from "$lib/battler/shop.svelte";
+  import { getPlayer } from "$lib/battler/player";
 
-  let player1: ICharacter[] = [
-    { name: "dog", attack: 5, health: 10 },
-    { name: "dog", attack: 5, health: 10 },
-    { name: "dog", attack: 5, health: 10 },
-  ];
+  let player1 = getPlayer();
+
+  player1.add({ attack: 5, health: 5, name: "monkey", id: "15" });
+  player1.add({ attack: 5, health: 5, name: "monkey", id: "25" });
+  player1.add({ attack: 5, health: 5, name: "monkey", id: "35" });
+
   let player2: ICharacter[] = [
     { name: "cat", attack: 5, health: 10 },
     { name: "cat", attack: 5, health: 10 },
@@ -16,11 +18,11 @@
 
   function takeTurn() {
     // player1 attacks player2
-    player1 = attack(player1, player2, 0);
+    $player1 = attack($player1, player2, 0);
     // player2 attacks player1
-    player2 = attack(player2, player1, 0);
+    player2 = attack(player2, $player1, 0);
 
-    player1 = cleanup(player1);
+    $player1 = cleanup($player1);
     player2 = cleanup(player2);
   }
 
@@ -61,7 +63,7 @@
 
 <div class="flex">
   <div class="player1 player battler-reverse">
-    {#each player1 as character}
+    {#each $player1 as character}
       <Character {character} reverse></Character>
     {/each}
   </div>
