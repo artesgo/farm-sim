@@ -3,18 +3,12 @@
   import Character from "$lib/battler/character.svelte";
   import Shop from "$lib/battler/shop.svelte";
   import { getPlayer } from "$lib/battler/player";
+  import { getRandomPet } from "$lib/battler/petlist";
 
   let player1 = getPlayer();
+  // player2 = getEnemey();
 
-  player1.add({ attack: 5, health: 5, name: "monkey", id: "15" });
-  player1.add({ attack: 5, health: 5, name: "monkey", id: "25" });
-  player1.add({ attack: 5, health: 5, name: "monkey", id: "35" });
-
-  let player2: ICharacter[] = [
-    { name: "cat", attack: 5, health: 10 },
-    { name: "cat", attack: 5, health: 10 },
-    { name: "cat", attack: 5, health: 10 },
-  ];
+  let player2: ICharacter[] = [getRandomPet(), getRandomPet(), getRandomPet()];
 
   function takeTurn() {
     // player1 attacks player2

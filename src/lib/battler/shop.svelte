@@ -1,14 +1,16 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import type { ICharacter } from "./character";
+  import type { ICharacter, IConsumable } from "./character";
   import { getRandomItem } from "./foodlist";
   import { getRandomPet } from "./petlist";
   import Character from "./character.svelte";
   import { getPlayer } from "./player";
   import { v4 } from "uuid";
+  import { createWallet } from "./money";
 
+  let wallet = createWallet();
   let pets: ICharacter[] = [];
-  let items: ICharacter[] = [];
+  let items: IConsumable[] = [];
   let player1 = getPlayer();
 
   function randomFoodItems() {
@@ -29,17 +31,22 @@
 
   // TODO: drag and drop store items into our squad
   function buyPet(pet: ICharacter) {
-    player1.add({
-      ...pet,
-      id: v4(),
-    });
+    if (pet.price && pet.price <= $wallet) {
+      player1.add({
+        ...pet,
+        id: v4(),
+      });
+
+      wallet.buy(pet.price, 1);
+    }
   }
 
   function sellPet(pet: ICharacter) {
     player1.remove(pet);
+    wallet.sell(pet.price || 0, 1);
   }
 
-  function buyFood(target: ICharacter) {}
+  function buyFood(target: IConsumable) {}
 
   onMount(() => {
     randomPets();
@@ -60,17 +67,24 @@
   </div>
 {/each}
 
-<!-- goal today is to click and buy pet -->
+<h2>Shop</h2>
+<h3>Wallet: ${$wallet}</h3>
 <div class="flex gap-4">
   {#each pets as pet}
     <div class="flex flex-col justify-center">
       <Character character={pet}></Character>
-      <button class="btn mt-2" on:click={() => buyPet(pet)}> Buy </button>
+
+      <button
+        disabled={!!pet.price && $wallet < pet.price}
+        class="btn mt-2"
+        on:click={() => buyPet(pet)}
+      >
+        Buy
+      </button>
     </div>
   {/each}
 </div>
 
-<!-- bonus goal sell pet -->
 <h2>Your current Team</h2>
 <div class="flex gap-4">
   {#each $player1 as pet}
