@@ -1,6 +1,7 @@
 export interface ICharacter extends IConsumable {
   damage: number;
 
+  act?: boolean;
   price?: number;
   id?: string;
 }

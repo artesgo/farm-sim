@@ -34,7 +34,7 @@
     if (pet.price && pet.price <= $wallet) {
       player1.add({
         ...pet,
-        id: v4(),
+        id: "id" + v4(),
       });
 
       wallet.buy(pet.price, 1);

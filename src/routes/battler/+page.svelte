@@ -6,34 +6,46 @@
   import { getRandomPet } from "$lib/battler/petlist";
 
   let player1 = getPlayer();
-  // player2 = getEnemey();
+  // player2 = getEnemy();
 
   let player2: ICharacter[] = [getRandomPet(), getRandomPet(), getRandomPet()];
 
   function takeTurn() {
+    const [attacker] = cleanup(player2);
+    const [defender] = cleanup($player1);
     // player1 attacks player2
-    $player1 = attack($player1, player2, 0);
+    $player1 = attack($player1, attacker, defender);
     // player2 attacks player1
-    player2 = attack(player2, $player1, 0);
+    player2 = attack(player2, defender, attacker);
 
-    $player1 = cleanup($player1);
-    player2 = cleanup(player2);
+    // $player1 = cleanup($player1);
+    // player2 = cleanup(player2);
   }
 
-  function attack(p1: ICharacter[], p2: ICharacter[], index = 0) {
-    let [attacker] = p2;
-
-    return p1.map((character, i) => {
-      if (index === i) {
-        character.health -= attacker.attack;
+  function attack(
+    p1: ICharacter[],
+    attacker: ICharacter,
+    defender: ICharacter
+  ) {
+    return p1.map((character) => {
+      if (defender.id === character.id) {
+        character.damage += attacker.attack;
+        character.act = true;
       }
 
       return character;
     });
   }
 
+  function stopAction(p1: ICharacter[]) {
+    return p1.map((character) => {
+      character.act = false;
+      return character;
+    });
+  }
+
   function cleanup(p1: ICharacter[]) {
-    return p1.filter((character) => character.health > 0);
+    return p1.filter((character) => character.health > character.damage);
   }
 
   let interval = 0;
@@ -42,11 +54,25 @@
   function start() {
     // game loop
     if (!inProgress) {
+      $player1 = resetDamage($player1);
+      player2 = resetDamage(player2);
+
       interval = setInterval(() => {
         takeTurn();
+        setTimeout(() => {
+          $player1 = stopAction($player1);
+          player2 = stopAction(player2);
+        }, 1400);
       }, 1500);
     }
     inProgress = true;
+  }
+
+  function resetDamage(list: ICharacter[]) {
+    return list.map((character) => {
+      character.damage = 0;
+      return character;
+    });
   }
 
   // cleanup when characters are dead
@@ -57,32 +83,30 @@
 
 <div class="flex">
   <div class="player1 player battler-reverse">
-    {#each $player1 as character}
+    {#each cleanup($player1) as character}
       <Character {character} reverse></Character>
     {/each}
   </div>
-
-  <button
-    class="btn btn-primary border rounded-md items-center"
-    on:click={start}
-  >
-    Start
-  </button>
-
+  {#if !inProgress}
+    <!-- start button -->
+  {/if}
   <div class="player2 player">
-    {#each player2 as character}
+    {#each cleanup(player2) as character}
       <Character {character}></Character>
     {/each}
   </div>
 </div>
 
-<Shop></Shop>
+<!-- should only show shop and start when battle has ended -->
+{#if !inProgress}
+  <Shop></Shop>
 
-<div class="flex justify-around">
-  <button class="btn btn-primary border rounded-md" on:click={start}>
-    Start
-  </button>
-</div>
+  <div class="flex justify-around">
+    <button class="btn btn-primary border rounded-md" on:click={start}>
+      Start
+    </button>
+  </div>
+{/if}
 
 <style>
   .player {
