@@ -4,14 +4,14 @@
   import { getRandomItem } from "./foodlist";
   import { getRandomPet } from "./petlist";
   import Character from "./character.svelte";
-  import { getPlayer } from "./player";
+  import { getPlayer, player } from "./player";
   import { v4 } from "uuid";
   import { createWallet } from "./money";
 
   let wallet = createWallet();
   let pets: ICharacter[] = [];
   let items: IConsumable[] = [];
-  let player1 = getPlayer();
+  let player1 = getPlayer(player);
 
   function randomFoodItems() {
     const item1 = getRandomItem();

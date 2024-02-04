@@ -2,24 +2,21 @@
   import type { ICharacter } from "$lib/battler/character";
   import Character from "$lib/battler/character.svelte";
   import Shop from "$lib/battler/shop.svelte";
-  import { getPlayer } from "$lib/battler/player";
+  import { enemy, getPlayer, player } from "$lib/battler/player";
   import { getRandomPet } from "$lib/battler/petlist";
 
-  let player1 = getPlayer();
-  // player2 = getEnemy();
+  let player1 = getPlayer(player);
+  let player2 = getPlayer(enemy);
 
-  let player2: ICharacter[] = [getRandomPet(), getRandomPet(), getRandomPet()];
+  player2.add(getRandomPet());
+  player2.add(getRandomPet());
+  player2.add(getRandomPet());
 
   function takeTurn() {
-    const [attacker] = cleanup(player2);
+    const [attacker] = cleanup($player2);
     const [defender] = cleanup($player1);
-    // player1 attacks player2
     $player1 = attack($player1, attacker, defender);
-    // player2 attacks player1
-    player2 = attack(player2, defender, attacker);
-
-    // $player1 = cleanup($player1);
-    // player2 = cleanup(player2);
+    $player2 = attack($player2, defender, attacker);
   }
 
   function attack(
@@ -54,25 +51,18 @@
   function start() {
     // game loop
     if (!inProgress) {
-      $player1 = resetDamage($player1);
-      player2 = resetDamage(player2);
+      player1.resetDamage();
+      player2.resetDamage();
 
       interval = setInterval(() => {
         takeTurn();
         setTimeout(() => {
           $player1 = stopAction($player1);
-          player2 = stopAction(player2);
+          $player2 = stopAction($player2);
         }, 1400);
       }, 1500);
     }
     inProgress = true;
-  }
-
-  function resetDamage(list: ICharacter[]) {
-    return list.map((character) => {
-      character.damage = 0;
-      return character;
-    });
   }
 
   // cleanup when characters are dead
@@ -91,7 +81,7 @@
     <!-- start button -->
   {/if}
   <div class="player2 player">
-    {#each cleanup(player2) as character}
+    {#each cleanup($player2) as character}
       <Character {character}></Character>
     {/each}
   </div>
