@@ -10,8 +10,11 @@ export function getPlayer(store: Writable<ICharacter[]>) {
   return {
     add: (pet: ICharacter) => update((state) => [...state, pet]),
     remove: (pet: ICharacter) => update((state) => remove(state, pet)),
-    attack: () => {},
+    attacked: (attacker: ICharacter, defender: ICharacter) =>
+      update((state) => attack(state, attacker, defender)),
     resetDamage: () => update(resetDamage),
+    stopAction: () => update(stopAction),
+    cleanup: () => update(cleanup),
     subscribe,
     set,
   };
@@ -26,6 +29,40 @@ function remove(list: ICharacter[], removed: ICharacter) {
 function resetDamage(list: ICharacter[]) {
   return list.map((character) => {
     character.damage = 0;
+    character.dead = false;
     return character;
+  });
+}
+
+function stopAction(list: ICharacter[]) {
+  return list.map((character) => {
+    return {
+      ...character,
+      act: false,
+    };
+  });
+}
+
+function attack(
+  list: ICharacter[],
+  attacker: ICharacter,
+  defender: ICharacter
+) {
+  return list.map((character) => {
+    if (defender.id === character.id) {
+      character.damage += attacker.attack;
+      character.act = true;
+    }
+
+    return character;
+  });
+}
+
+function cleanup(list: ICharacter[]) {
+  return list.map((character) => {
+    return {
+      ...character,
+      dead: character.health <= character.damage,
+    };
   });
 }

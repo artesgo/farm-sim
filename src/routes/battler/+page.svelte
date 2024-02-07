@@ -4,45 +4,37 @@
   import Shop from "$lib/battler/shop.svelte";
   import { enemy, getPlayer, player } from "$lib/battler/player";
   import { getRandomPet } from "$lib/battler/petlist";
+  import { createWallet } from "$lib/stores/money";
 
   let player1 = getPlayer(player);
   let player2 = getPlayer(enemy);
 
+  player1.add(getRandomPet());
+  player1.add(getRandomPet());
+  player1.add(getRandomPet());
+
   player2.add(getRandomPet());
   player2.add(getRandomPet());
   player2.add(getRandomPet());
+  let wallet = createWallet();
+
+  $: player1Alive = $player1.filter((char) => !char.dead);
+  $: player2Alive = $player2.filter((char) => !char.dead);
 
   function takeTurn() {
-    const [attacker] = cleanup($player2);
-    const [defender] = cleanup($player1);
-    $player1 = attack($player1, attacker, defender);
-    $player2 = attack($player2, defender, attacker);
-  }
-
-  function attack(
-    p1: ICharacter[],
-    attacker: ICharacter,
-    defender: ICharacter
-  ) {
-    return p1.map((character) => {
-      if (defender.id === character.id) {
-        character.damage += attacker.attack;
-        character.act = true;
-      }
-
-      return character;
-    });
-  }
-
-  function stopAction(p1: ICharacter[]) {
-    return p1.map((character) => {
-      character.act = false;
-      return character;
-    });
-  }
-
-  function cleanup(p1: ICharacter[]) {
-    return p1.filter((character) => character.health > character.damage);
+    const player1Attacker = $player1.find((char) => !char.dead) as ICharacter;
+    const player2Attacker = $player2.find((char) => !char.dead) as ICharacter;
+    if (!player1Attacker || !player2Attacker) {
+      inProgress = !inProgress;
+      clearInterval(interval);
+      player1.resetDamage();
+      player2.resetDamage();
+      // give player some money
+      wallet.sell(15, 1);
+      return;
+    }
+    player1.attacked(player2Attacker, player1Attacker);
+    player2.attacked(player1Attacker, player2Attacker);
   }
 
   let interval = 0;
@@ -51,29 +43,23 @@
   function start() {
     // game loop
     if (!inProgress) {
-      player1.resetDamage();
-      player2.resetDamage();
-
       interval = setInterval(() => {
         takeTurn();
         setTimeout(() => {
-          $player1 = stopAction($player1);
-          $player2 = stopAction($player2);
+          player1.stopAction();
+          player2.stopAction();
+          player1.cleanup();
+          player2.cleanup();
         }, 1400);
       }, 1500);
     }
     inProgress = true;
   }
-
-  // cleanup when characters are dead
-  // end game when no characters left on one team
-  // animating the attack
-  // character portraits
 </script>
 
 <div class="flex">
   <div class="player1 player battler-reverse">
-    {#each cleanup($player1) as character}
+    {#each player1Alive as character}
       <Character {character} reverse></Character>
     {/each}
   </div>
@@ -81,7 +67,7 @@
     <!-- start button -->
   {/if}
   <div class="player2 player">
-    {#each cleanup($player2) as character}
+    {#each player2Alive as character}
       <Character {character}></Character>
     {/each}
   </div>
